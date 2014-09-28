@@ -45,7 +45,13 @@ read_tps_page (tpsp* p, FILE* fp) {
 	fread(&p->p_size3, sizeof(uint16_t), 1, fp);
 	fread(&p->p_list, sizeof(uint16_t), 1, fp);
 	fread(&p->p_state, sizeof(uint8_t), 1, fp);
-	fread(&p->p_zip, sizeof(uint8_t), 1, fp);
+	if (p->p_state == 0) {
+		fread(&p->p_zip, sizeof(uint8_t), 1, fp);	
+	} else {
+		p->p_zip = 0;
+		p->p_ppage = malloc(sizeof(uint32_t) * p->p_list);
+		fread(p->p_ppage, sizeof(uint32_t), p->p_list, fp);
+	}
 }
 
 tpsp*
